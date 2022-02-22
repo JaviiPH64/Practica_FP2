@@ -1,5 +1,5 @@
 // Práctica FP2 Rummikub versión 1
-// Lunes 21/02/2022
+// 1.1 Martes 22/02/2022
 
 #include <iostream>
 using namespace std;
@@ -26,11 +26,25 @@ struct tFicha {
 	tColor color;
 };
 
+// struct para la bolsa propuesto por la profesora (cuidado, NumColores * 2 = 10)
+typedef bool tArrayBolsa[NumColores * 2][NumFichas];
+struct tBolsa_{
+	tArrayBolsa fichas;
+	int cont;
+}
+
 //aquí están todas las fichas inicialmente, 8 filas, NUM_FICHAS (10) columnas y cantidad de fichas disponibles en la bolsa
 struct tBolsa {
 	bool fichas[8][NUM_FICHAS];
 	int fichasDisponibles = TOTAL_FICHAS;
-};
+}
+
+//soporte propuesto en clase
+typedef tFicha tArraySoporte[MAX_FICHAS];
+struct tSoporte {
+	tArraySoporte fichas;
+	int cont;
+}
 
 //aquí cada jugador guarda sus fichas
 typedef tFicha tSoporte[MAX_FICHAS];
@@ -47,6 +61,8 @@ tSoporte soporte1;
 tSoporte soporte2;
 tSoportes soportes;
 tTablero tablero;
+
+//inicializar bolsa: poner todas las casillas a true
 
 //subprogramas
 int menu() {
