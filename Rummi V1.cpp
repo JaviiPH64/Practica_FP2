@@ -2,9 +2,10 @@
 // 1.1 Martes 22/02/2022
 
 #include <iostream>
+#include <iomanip>
 #include <stdio.h>
 #include <stdlib.h> //rand y RAND_MAX
-#include <time.h>
+#include <ctime>
 using namespace std;
 
 //número de fichas disponibles por cada color
@@ -14,7 +15,7 @@ const int NUM_JUGADORES = 2;
 //número total de fichas del juego
 const int TOTAL_FICHAS = NUM_FICHAS * 8;
 //número de fichas que se reparten inicialmente a cada jugador
-const int INI_FICHAS = 10;
+const int INI_FICHAS = 9;
 //número máximo de fichas por jugador
 const int MAX_FICHAS = 50;
 //número máximo de jugadas
@@ -29,21 +30,17 @@ struct tFicha {
 	tColor color;
 };
 
-/* struct para la bolsa propuesto por la profesora(cuidado, NumColores * 2 = 10)
-typedef bool tArrayBolsa[NumColores * 2][NumFichas];
-struct tBolsa_ {
-	tArrayBolsa fichas;
-	int cont;
-}*/
-
 //aquí están todas las fichas inicialmente, 8 filas, NUM_FICHAS (10) columnas y cantidad de fichas disponibles en la bolsa
+typedef bool tArrayBolsa[8][NUM_FICHAS];
+
 struct tBolsa {
-	bool fichas[8][NUM_FICHAS];
+	tArrayBolsa fichas;
 	int fichasDisponibles = TOTAL_FICHAS;
 };
 
 //soporte propuesto en clase, aquí cada jugador guarda sus fichas, inicialmente 10
 typedef tFicha tArraySoporte[MAX_FICHAS];
+
 struct tSoporte {
 	tArraySoporte fichas;
 	int numFichasSoporte;
@@ -51,17 +48,23 @@ struct tSoporte {
 
 //array con los soportes de los jugadores
 typedef tSoporte tSoportes[NUM_JUGADORES];
-//cada jugador roba y/o pone fichas
-typedef tFicha tJugada[NUM_FICHAS];
-//array de jugadas
-typedef tJugada tTablero[MAX_JUGADAS];
 
-//inicializamos las estructuras de datos
-tBolsa bolsa;
-tSoporte soporte1;
-tSoporte soporte2;
-tSoportes soportes { soporte1, soporte2 };
-tTablero tablero;
+//cada jugador roba y/o pone fichas
+//jugada: una serie o escalera de fichas que está en el tablero (lista de hasta NUM_FICHAS fichas)
+typedef tFicha tArrayJugada[NUM_FICHAS];
+
+struct tJugada {
+	tArrayJugada filaFichas;
+	int cont;
+};
+
+//array de jugadas
+typedef tJugada tArrayTablero[8];
+
+struct tTablero {
+	tArrayTablero jugadas;
+	int cont = 0;
+};
 
 //subprogramas
 int menu() {
@@ -78,7 +81,7 @@ void inicializarBolsa(tBolsa& bolsa) {
 }
 
 int generaFilaAleatoria() {
-	return rand() % (8 - 1);
+	return rand() % 7;
 }
 int generaColumnaAleatoria() {
 	return rand() % (NUM_FICHAS - 1);
@@ -86,7 +89,7 @@ int generaColumnaAleatoria() {
 
 tFicha robar(tBolsa& bolsa, tSoporte soporte) {
 	bool aux = false;
-	while (!aux) {
+	while (aux) {
 		int fila = generaFilaAleatoria();
 		int columna = generaColumnaAleatoria();
 		if (bolsa.fichas[fila][columna] == true) {
@@ -94,12 +97,12 @@ tFicha robar(tBolsa& bolsa, tSoporte soporte) {
 			aux = true;
 			return ficha;
 		}
-	}	
+	}
 }
 
 void repartir(tBolsa& bolsa, tSoportes soportes) {
-	while (soportes[0].numFichasSoporte != 10) {
-		int fila  = generaFilaAleatoria();
+	while (soportes[0].numFichasSoporte != 9) {
+		int fila = generaFilaAleatoria();
 		int columna = generaColumnaAleatoria();
 		if (bolsa.fichas[fila][columna] == true) {
 			tFicha ficha{ columna, tColor(fila) };
@@ -109,7 +112,7 @@ void repartir(tBolsa& bolsa, tSoportes soportes) {
 		}
 	}
 
-	while (soportes[1].numFichasSoporte != 10) {
+	while (soportes[1].numFichasSoporte != 9) {
 		int fila = generaFilaAleatoria();
 		int columna = generaColumnaAleatoria();
 		if (bolsa.fichas[fila][columna] == true) {
@@ -181,10 +184,6 @@ int menor(const tSoportes soportes) {
 
 }
 
-void mostrar(tFicha ficha) {
-
-}
-
 void mostrar(const tBolsa& bolsa) {
 
 }
@@ -203,6 +202,16 @@ void mostrar(const tSoporte& soporte) {
 
 void mostrarIndices(int num) {
 
+}
+
+int main() {
+	return 0;
+}
+
+void mostrar(tFicha ficha) {
+	colorTexto(ficha.color);
+	cout << setw(2) << ficha.numero << " ";
+	colorTexto(blanco);
 }
 
 void colorTexto(tColor color) {
