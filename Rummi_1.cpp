@@ -1,37 +1,38 @@
-// Práctica FP2 Rummikub versión 1
+// PrÃ¡ctica FP2 Rummikub versiÃ³n 1
+// Lunes 21/02/2022
 
 #include <iostream>
 using namespace std;
 
-//número de fichas disponibles por cada color
+//nÃºmero de fichas disponibles por cada color
 const int NUM_FICHAS = 10;
-//número de jugadores
+//nÃºmero de jugadores
 const int NUM_JUGADORES = 2;
-//número total de fichas del juego
+//nÃºmero total de fichas del juego
 const int TOTAL_FICHAS = NUM_FICHAS * 8;
-//número de fichas que se reparten inicialmente a cada jugador
+//nÃºmero de fichas que se reparten inicialmente a cada jugador
 const int INI_FICHAS = 10;
-//número máximo de fichas por jugador
+//nÃºmero mÃ¡ximo de fichas por jugador
 const int MAX_FICHAS = 50;
-//número máximo de jugadas
+//nÃºmero mÃ¡ximo de jugadas
 const int MAX_JUGADAS = NUM_FICHAS * 2;
 
 //colores de las fichas, el color blanco es para el texto
 enum tColor { rojo, verde, azul, amarillo, blanco };
 
-//estructura que representa a cada ficha, con un número y un color
+//estructura que representa a cada ficha, con un nÃºmero y un color
 struct tFicha {
 	int numero;
 	tColor color;
 };
 
-//aquí están todas las fichas inicialmente, 8 filas, NUM_FICHAS (10) columnas y cantidad de fichas disponibles en la bolsa
+//aquÃ­ estÃ¡n todas las fichas inicialmente, 8 filas, NUM_FICHAS (10) columnas y cantidad de fichas disponibles en la bolsa
 struct tBolsa {
 	bool fichas[8][NUM_FICHAS];
 	int fichasDisponibles = TOTAL_FICHAS;
 };
 
-//aquí cada jugador guarda sus fichas
+//aquÃ­ cada jugador guarda sus fichas
 typedef tFicha tSoporte[MAX_FICHAS];
 //array con los soportes de los jugadores
 typedef tSoporte tSoportes[NUM_JUGADORES];
