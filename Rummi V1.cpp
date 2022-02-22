@@ -1,28 +1,29 @@
-// Práctica FP2 Rummikub versión 1
+// PrÃ¡ctica FP2 Rummikub versiÃ³n 1
 // 1.1 Martes 22/02/2022
 
 #include <iostream>
 #include <stdio.h>
 #include <stdlib.h> //rand y RAND_MAX
+#include <time.h>
 using namespace std;
 
-//número de fichas disponibles por cada color
+//nÃºmero de fichas disponibles por cada color
 const int NUM_FICHAS = 10;
-//número de jugadores
+//nÃºmero de jugadores
 const int NUM_JUGADORES = 2;
-//número total de fichas del juego
+//nÃºmero total de fichas del juego
 const int TOTAL_FICHAS = NUM_FICHAS * 8;
-//número de fichas que se reparten inicialmente a cada jugador
+//nÃºmero de fichas que se reparten inicialmente a cada jugador
 const int INI_FICHAS = 10;
-//número máximo de fichas por jugador
+//nÃºmero mÃ¡ximo de fichas por jugador
 const int MAX_FICHAS = 50;
-//número máximo de jugadas
+//nÃºmero mÃ¡ximo de jugadas
 const int MAX_JUGADAS = NUM_FICHAS * 2;
 
 //colores de las fichas, el color blanco es para el texto
 enum tColor { rojo, verde, azul, amarillo, blanco };
 
-//estructura que representa a cada ficha, con un número y un color
+//estructura que representa a cada ficha, con un nÃºmero y un color
 struct tFicha {
 	int numero;
 	tColor color;
@@ -35,13 +36,13 @@ struct tBolsa_ {
 	int cont;
 }*/
 
-//aquí están todas las fichas inicialmente, 8 filas, NUM_FICHAS (10) columnas y cantidad de fichas disponibles en la bolsa
+//aquÃ­ estÃ¡n todas las fichas inicialmente, 8 filas, NUM_FICHAS (10) columnas y cantidad de fichas disponibles en la bolsa
 struct tBolsa {
 	bool fichas[8][NUM_FICHAS];
 	int fichasDisponibles = TOTAL_FICHAS;
 };
 
-//soporte propuesto en clase, aquí cada jugador guarda sus fichas, inicialmente 10
+//soporte propuesto en clase, aquÃ­ cada jugador guarda sus fichas, inicialmente 10
 typedef tFicha tArraySoporte[MAX_FICHAS];
 struct tSoporte {
 	tArraySoporte fichas;
@@ -76,15 +77,24 @@ void inicializarBolsa(tBolsa& bolsa) {
 	}
 }
 
-tFicha robar(tBolsa& bolsa) {
-
-}
-
 int generaFilaAleatoria() {
-	return 0 + rand() / (RAND_MAX / (8 - 0 + 1) + 1);
+	return rand() % (8 - 1);
 }
 int generaColumnaAleatoria() {
-	return 0 + rand() / (RAND_MAX / (NUM_FICHAS - 0 + 1) + 1);
+	return rand() % (NUM_FICHAS - 1);
+}
+
+tFicha robar(tBolsa& bolsa, tSoporte soporte) {
+	bool aux = false;
+	while (!aux) {
+		int fila = generaFilaAleatoria();
+		int columna = generaColumnaAleatoria();
+		if (bolsa.fichas[fila][columna] == true) {
+			tFicha ficha{ columna, tColor(fila) };
+			aux = true;
+			return ficha;
+		}
+	}	
 }
 
 void repartir(tBolsa& bolsa, tSoportes soportes) {
@@ -111,8 +121,20 @@ void repartir(tBolsa& bolsa, tSoportes soportes) {
 	}
 }
 
+//hecho en base al ejemplo de la diapositiva 14 del tema 2
 void ordenarPorNum(tSoporte& soporte) {
-
+	int nuevo, pos;
+	for (int i = 1; i < soporte.numFichasSoporte; i++) {
+		pos = 0;
+		while (pos < i && (soporte.fichas[pos].numero <= soporte.fichas[i].numero)) {
+			pos++;
+		}
+		nuevo = soporte.fichas[i].numero;
+		for (int j = i; j > pos; j--) {
+			soporte.fichas[j].numero = soporte.fichas[j].numero - 1;
+		}
+		soporte.fichas[pos].numero = nuevo;
+	}
 }
 
 void ordenarPorColor(tSoporte& soporte) {
