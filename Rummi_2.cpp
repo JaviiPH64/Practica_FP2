@@ -1,6 +1,6 @@
-// Práctica FP2 Rummikub versión 1
-// 1.3 Jueves 17/03/2022
-// F. Javier Peña Hernández
+// PrÃ¡ctica FP2 Rummikub versiÃ³n 1
+// 1.4 Jueves 24/03/2022
+// F. Javier PeÃ±a HernÃ¡ndez
 // 54212187Z
 
 #include <iostream>
@@ -11,7 +11,7 @@
 #include <ctime>
 using namespace std;
 
-//Ficha: caracterizada por su color y su nº
+//Ficha: caracterizada por su color y su nÂº
 
 enum tColor { rojo, verde, azul, amarillo, blanco };
 
@@ -24,7 +24,7 @@ struct tFicha {
 
 const int NUM_FICHAS = 10;
 const int NUM_COLORES = 4;
-const int TOTAL_FICHAS = NUM_FICHAS * 8;  //2 fichas iguales de cada número y color
+const int TOTAL_FICHAS = NUM_FICHAS * 8;  //2 fichas iguales de cada nÃºmero y color
 const int INI_FICHAS = 9;
 
 typedef bool tArrayBolsa[8][NUM_FICHAS];
@@ -34,7 +34,7 @@ struct tBolsa {
 	int fichasDisponibles = TOTAL_FICHAS;
 };
 
-//Soporte: lista de tamaño variable de hasta MAX_FICHAS fichas
+//Soporte: lista de tamaÃ±o variable de hasta MAX_FICHAS fichas
 
 const int MAX_FICHAS = 50;
 const int NUM_JUGADORES = 2;
@@ -61,11 +61,37 @@ typedef tJugada tArrayTablero[MAX_JUGADAS];
 
 struct tTablero {
 	tArrayTablero jugadas;
-	int cont = 0;
+	int numJugadas = 0;
 };
 
 //subprogramas
 
+int menu();
+void inicializarBolsa(tBolsa& bolsa);
+tFicha robar(tBolsa& bolsa);
+void repartir(tBolsa& bolsa, tSoportes soportes);
+void ordenarPorNum(tSoporte& soporte);
+void ordenarPorColor(tSoporte& soporte);
+bool operator==(tFicha izq, tFicha der);
+int buscar(const tJugada& jugada, tFicha ficha);
+void mostrarSeries(tSoporte soporte);
+void mostrarEscaleras(tSoporte soporte);
+void nuevaJugada(tTablero& tablero, const tJugada& jugada);
+void eliminaFichas(tSoporte& soporte, const tJugada& jugada);
+void nuevaJugada(tSoporte soporte, tJugada& jugada);
+bool ponerFicha(tJugada& jugada, tFicha ficha);
+bool jugar(tTablero& tablero, tSoporte& soporte);
+int menor(const tSoportes soportes);
+void mostrar(tFicha ficha);
+void mostrar(const tBolsa& bolsa);
+void mostrar(const tJugada& jugada);
+void mostrar(const tTablero& tablero);
+void mostrar(const tSoporte& soporte);
+void mostrarIndices(int num);
+
+//mis subprogramas
+string mostrarColor(tColor color);
+string mostrarVerdaderoFalso(bool valorFicha);
 
 //le damos a cada casilla de la bolsa el valor true
 void inicializarBolsa(tBolsa& bolsa) {
@@ -76,11 +102,24 @@ void inicializarBolsa(tBolsa& bolsa) {
 	}
 }
 
+//REVISAR
+void inicializarTablero(tTablero& tablero) {
+	for (int i = 0; i < MAX_JUGADAS; i++) {
+		tablero.jugadas[i] = {};
+		for (int j = 0; j < NUM_FICHAS; j++) {
+			tablero.jugadas[i].filaFichas[j].color = blanco;
+			tablero.jugadas[i].filaFichas[j].numero = 0;
+		}
+	}
+}
+
 int generaFilaAleatoria() {
-	return rand() % 7;
+	srand(time(NULL));
+	return rand() % 8;
 }
 int generaColumnaAleatoria() {
-	return rand() % (NUM_FICHAS - 1);
+	srand(time(NULL));
+	return rand() % (NUM_FICHAS);
 }
 
 /*tFicha robar(tBolsa& bolsa, tSoporte soporte) {
@@ -105,11 +144,11 @@ tFicha robar(tBolsa& bolsa) {
 	if (bolsa.fichasDisponibles == 0) {
 		fichaRobada.numero = -1;
 	}
-	else if(bolsa.bolsa_fichas[fila][columna] == true) {
+	else if (bolsa.bolsa_fichas[fila][columna] == true) {
 		bolsa.fichasDisponibles--;
 		bolsa.bolsa_fichas[fila][columna] = false;
 	}
-	else if(bolsa.bolsa_fichas[fila][columna] == false) {
+	else if (bolsa.bolsa_fichas[fila][columna] == false) {
 		for (int i = fila; i < (8); i++) {
 			for (int j = columna; j < NUM_FICHAS; j++) {
 				if (bolsa.bolsa_fichas[i][j] == true) {
@@ -143,7 +182,7 @@ void repartir(tBolsa& bolsa, tSoportes soportes) {
 		int fila = generaFilaAleatoria();
 		int columna = generaColumnaAleatoria();
 		if (bolsa.bolsa_fichas[fila][columna] == true) {
-			tFicha ficha{ columna, tColor(fila%NUM_COLORES) };
+			tFicha ficha{ columna, tColor(fila % NUM_COLORES) };
 			soportes[0].fichas[soportes[0].numFichasSoporte] = ficha;
 			soportes[0].numFichasSoporte++;
 			bolsa.bolsa_fichas[fila][columna] = false;
@@ -229,7 +268,7 @@ void ordenarPorColor(tSoporte& soporte) {
 			soporte.fichas[i + soporte.numFichasSoporte] = fichasAmarillas[i];
 			soporte.numFichasSoporte++;
 		}
-	}	
+	}
 }
 
 bool operator==(tFicha izq, tFicha der) {
@@ -252,7 +291,7 @@ void nuevaJugada(tTablero& tablero, const tJugada& jugada) {
 
 }
 
-void eliminarFichas(tTablero& tablero, const tJugada& jugada) {
+void eliminaFichas(tTablero& tablero, const tJugada& jugada) {
 
 }
 
@@ -288,26 +327,30 @@ int menor(const tSoportes soportes) {
 	}
 }
 
-void mostrarBolsa(const tBolsa& bolsa) {
-	for (int i = 0; i < 8; i++) {
-		for (int j = 0; j < NUM_FICHAS; j++) {
-			cout << bolsa.bolsa_fichas[i][j];
+void mostrar(const tBolsa& bolsa) {
+	for (int fila = 0; fila < 8; fila++) {
+		cout << " " << endl;
+		for (int columna = 0; columna < NUM_FICHAS; columna++) {
+			tColor colorFicha = tColor(fila % NUM_COLORES);
+			string color = mostrarColor(colorFicha);
+			int colum = columna + 1;
+			cout << "color: " << color << " numero: " << colum << " valor: " << mostrarVerdaderoFalso(bolsa.bolsa_fichas[fila][columna]) << " ";
 		}
 	}
 }
 
-void mostrarJugada(const tJugada& jugada) {
+void mostrar(const tJugada& jugada) {
 
 }
 
-void mostrarTablero(const tTablero& tablero) {
+void mostrar(const tTablero& tablero) {
 
 }
 
-void mostrarSoporte(const tSoporte& soporte) {
+void mostrar(const tSoporte& soporte) {
 	for (int i = 0; i < soporte.numFichasSoporte; i++) {
 		cout << soporte.numFichasSoporte;
-		
+
 	}
 }
 
@@ -315,6 +358,31 @@ void mostrarIndices(int num) {
 
 }
 
+string mostrarColor(tColor color) {
+	switch (color) {
+	case 0:
+		return "Rojo";
+		break;
+	case 1:
+		return "Azul";
+		break;
+	case 2:
+		return "Verde";
+		break;
+	case 3:
+		return "Amarillo";
+		break;
+	}
+}
+
+string mostrarVerdaderoFalso(bool valorFicha) {
+	if (valorFicha == 0) {
+		return "false";
+	}
+	else {
+		return "true";
+	}
+}
 
 void colorTexto(tColor color) {
 	switch (color) {
@@ -342,29 +410,28 @@ void mostrar(tFicha ficha) {
 	colorTexto(blanco);
 }
 
-int elegirJugador() {
+void elegirJugador() {
 	srand(time(NULL));
-	int a = 1 + rand() % (2 + 1 - 1);
-	if (a == 1 || a == 2) {
-		printf("\n El jugador elegido es el:");
-		printf("valor: &i", a);
-		return a;
-	}
-	else {
-		elegirJugador();
-	}
-	
+	int a = rand() % 2;
+	a++;
+	cout << "El jugador elegido es el: " << a << endl;
 }
 
 int menu() {
+	tBolsa bolsa;
+	tTablero tablero;
 	elegirJugador();
-	
+	inicializarBolsa(bolsa);
 	return 0;
 }
 
 int main() {
-	printf("Hola mundo \n");
-	menu();
+	cout << "Hola mundo" << endl;
+	elegirJugador();
+	tBolsa bolsa;
+	inicializarBolsa(bolsa);
+	mostrar(bolsa);
+
 
 	return 0;
 }
