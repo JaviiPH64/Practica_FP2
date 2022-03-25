@@ -1,9 +1,11 @@
 // Práctica FP2 Rummikub versión 1
-// 1.4 Jueves 24/03/2022
 // F. Javier Peña Hernández
 // 54212187Z
+// Última actualización: 1.4 Jueves 24/03/2022
+// Entrega: 03/04/2022
 
 #include <iostream>
+#include <istream>
 #include <ostream>
 #include <iomanip>
 #include <stdio.h>
@@ -65,7 +67,6 @@ struct tTablero {
 };
 
 //subprogramas
-
 int menu();
 void inicializarBolsa(tBolsa& bolsa);
 tFicha robar(tBolsa& bolsa);
@@ -88,37 +89,101 @@ void mostrar(const tJugada& jugada);
 void mostrar(const tTablero& tablero);
 void mostrar(const tSoporte& soporte);
 void mostrarIndices(int num);
+void colorTexto(tColor color);
 
 //mis subprogramas
-void inicializarBolsa(tBolsa& bolsa);
-void inicializarTablero(tTablero& tablero);
+void elegirJugador();
 int generaFilaAleatoria();
 int generaColumnaAleatoria();
 string mostrarColor(tColor color);
 string mostrarVerdaderoFalso(bool valorFicha);
 
+//OK
 //Muestra las opciones para las acciones principales del usuario 
 //y devuelve la opción elegida por el usuario
 int menu() {
-	tBolsa bolsa;
-	tTablero tablero;
-	elegirJugador();
-	inicializarBolsa(bolsa);
-	return 0;
+	int opcion;
+	cout << "Elige que quieres hacer: " << endl;
+	cout << "1: ordenar por numero, 2: ordenar por color, 3: sugerir, 4: poner, 0: FIN" << endl;
+	cin >> opcion;
+	return opcion;
 }
 
 //Programa principal
 int main() {
-	cout << "Hola mundo" << endl;
-	elegirJugador();
-	tBolsa bolsa;
-	inicializarBolsa(bolsa);
-	mostrar(bolsa);
+	//Inicializar el estado del juego: la bolsa con todas las fichas + el tablero sin jugadas
+	//+ el contador de jugadores en bloqueo a 0 + el fin del juego a false
+	tBolsa bolsa;				
+	inicializarBolsa(bolsa);						//se inicializa la bolsa
+	tTablero tablero;								//se inicializa el tablero
+	tSoporte soporte1;
+	tSoporte soporte2;
+	tSoportes soportes = { soporte1, soporte2 };	//soportes
 
+	//Hacer el reparto inicial de fichas por los soportes
+	//mostrar(bolsa);
+	//repartir(bolsa, soportes);
+	tFicha ficha1{ 1, rojo };
+	tFicha ficha2{ 2, verde };
+	tFicha ficha3{ 4, rojo };
+	tFicha ficha4{ 7, amarillo };
+	tFicha ficha5{ 1, azul };
+	soporte1.fichas[0] = ficha1;
+	soporte1.numFichasSoporte++;
+	soporte1.fichas[1] = ficha2;
+	soporte1.numFichasSoporte++;
+	soporte1.fichas[2] = ficha3;
+	soporte1.fichas[3] = ficha4;
+	soporte1.fichas[4] = ficha5;
+	soporte1.numFichasSoporte = 5;
+	mostrar(soporte1);
+	//mostrar(bolsa);
+	//mostrar(soporte1);
+
+	//Decidir aleatoriamente el jugador que tiene el primer turno
+	//elegirJugador();
+	//menu();
+
+	//Mientras no se llegue al final del juego
+		//Mostrar el estado del tablero
+		//Ejecutar el turno del jugador
+		//Si el jugador no ha incorporado jugada en el tablero
+			//Si quedan fichas en la bolsa
+				//Robar una ficha + mostrar la bolsa + mostrar el soporte con la nueva ficha
+				//+ reiniciar contador de jugadores en bloqueo
+			//Si no quedan fichas en la bolsa
+				//Aumentar el contador de jugadores en bloqueo
+		//Si el jugador se ha quedado sin fichas en el soporte
+			//Fin del juego + mostrar mensaje diciendo que es el ganador
+		//Si el jugador aún tiene fichas
+			//Si todos los jugadores están bloqueados
+				//Fin del juego + determinar qué jugador gana + mostrar mensaje indicando quién gana
+			//Si hay jugadores que pueden jugar
+				//Pasar el turno al siguiente jugador    
 	return 0;
 }
 
-//le damos a cada casilla de la bolsa el valor true
+//OK
+//Elegimos aleatoriamente quién empieza el juego.
+void elegirJugador() {
+	string jugador1, jugador2;
+	cout << "Introduce el nombre del primer jugador " << endl;
+	cin >> jugador1;
+	cout << "Introduce el nombre del segundo jugador " << endl;
+	cin >> jugador2;
+	srand(time(NULL));
+	int a = rand() % 2;
+	a++;
+	if (a == 1) {
+		cout << "El jugador que comienza es: " << jugador1 << endl;
+	}
+	else {
+		cout << "El jugador que comienza es: " << jugador2 << endl;
+	}
+}
+
+//OK
+//Le damos a cada casilla de la bolsa el valor true
 //Inicializa la bolsa de fichas de manera que estén todas disponibles
 void inicializarBolsa(tBolsa& bolsa) {
 	for (int i = 0; i < 8; i++) {
@@ -128,111 +193,81 @@ void inicializarBolsa(tBolsa& bolsa) {
 	}
 }
 
-//REVISAR
-void inicializarTablero(tTablero& tablero) {
-	for (int i = 0; i < MAX_JUGADAS; i++) {
-		tablero.jugadas[i] = {};
-		for (int j = 0; j < NUM_FICHAS; j++) {
-			tablero.jugadas[i].filaFichas[j].color = blanco;
-			tablero.jugadas[i].filaFichas[j].numero = 0;
-		}
-	}
-}
-
+//OK
+//Genera un valor aleatorio para seleccionar una fila
 int generaFilaAleatoria() {
 	srand(time(NULL));
 	return rand() % 8;
 }
+
+//OK
+//Genera un valor aleatorio para seleccionar una columna
 int generaColumnaAleatoria() {
 	srand(time(NULL));
 	return rand() % (NUM_FICHAS);
 }
 
-/*tFicha robar(tBolsa& bolsa, tSoporte soporte) {
-	bool aux = false;
-	while (aux) {
-		int fila = generaFilaAleatoria();
-		int columna = generaColumnaAleatoria();
-		if (bolsa.bolsa_fichas[fila][columna] == true) {
-			tFicha ficha{ columna, tColor(fila) };
-			aux = true;
-			return ficha;
-		}
-	}
-}*/
-
+//REVISAR
 //Devuelve una ficha obtenida de la bolsa. Empieza en una ficha situada en una fila
 //y una columna seleccionadas aleatoriamente. Si la ficha está disponible, devuelve la misma.
 //Si ya ha sido usada, se avanza por el array bidimensional desde esa posición y por filas
 //hasta encontrar una ficha disponible que devolver. Si llega al final del array sin encontrar
 //una ficha disponible seguirá buscando desde el principio. Si no quedan fichas en la bolsa, 
 //devuelve una ficha con el número -1.
-tFicha robar(tBolsa& bolsa) {
-	int fila = generaFilaAleatoria();
-	int columna = generaColumnaAleatoria();
-	tFicha fichaRobada;
-	fichaRobada.numero = columna;
-	fichaRobada.color = tColor(fila % NUM_COLORES);
+
+tFicha robar(tBolsa& bolsa) {	
+	tFicha fichaRobada{};
 	if (bolsa.fichasDisponibles == 0) {
 		fichaRobada.numero = -1;
 	}
-	else if (bolsa.bolsa_fichas[fila][columna] == true) {
-		bolsa.fichasDisponibles--;
-		bolsa.bolsa_fichas[fila][columna] = false;
-	}
-	else if (bolsa.bolsa_fichas[fila][columna] == false) {
-		for (int i = fila; i < (8); i++) {
-			for (int j = columna; j < NUM_FICHAS; j++) {
-				if (bolsa.bolsa_fichas[i][j] == true) {
-					fichaRobada.numero = columna;
-					fichaRobada.color = tColor(fila % NUM_COLORES);
-					bolsa.fichasDisponibles--;
-					bolsa.bolsa_fichas[fila][columna] = false;
-					break;
+	else {
+		int fila = generaFilaAleatoria();
+		int columna = generaColumnaAleatoria();
+		bool aux = false;
+		while(bolsa.bolsa_fichas[fila][columna] == false) {
+			for (int i = fila; i < 8; i++) {
+				for (int j = columna; j < NUM_FICHAS; j++) {
+					if (bolsa.bolsa_fichas[i][j] == true) {
+						bolsa.bolsa_fichas[fila][columna] = bolsa.bolsa_fichas[i][j];
+						fichaRobada.numero = columna + 1;
+						fichaRobada.color = tColor(fila % NUM_COLORES);
+						bolsa.fichasDisponibles--;
+						bolsa.bolsa_fichas[i][j] = false;
+						aux = true;
+					}
 				}
-				if (bolsa.bolsa_fichas[8][NUM_FICHAS] == false) {
-					for (int i = 0; i < (8); i++) {
-						for (int j = 0; j < NUM_FICHAS; j++) {
-							if (bolsa.bolsa_fichas[i][j] == true) {
-								fichaRobada.numero = columna;
-								fichaRobada.color = tColor(fila % NUM_COLORES);
-								bolsa.fichasDisponibles--;
-								bolsa.bolsa_fichas[fila][columna] = false;
-								break;
-							}
+			}
+			if (aux == false) {
+				for(int i = 0; i < 8; i++) {
+					for (int j = 0; j < NUM_FICHAS; j++) {
+						if (bolsa.bolsa_fichas[i][j] == true) {
+							bolsa.bolsa_fichas[fila][columna] = bolsa.bolsa_fichas[i][j];
+							fichaRobada.numero = columna + 1;
+							fichaRobada.color = tColor(fila % NUM_COLORES);
+							bolsa.fichasDisponibles--;
+							bolsa.bolsa_fichas[i][j] = false;
+							aux = true;
 						}
 					}
 				}
 			}
-		}
-	}
+		 }	
+	}	
 	return fichaRobada;
 }
 
-//REVISAR
+//OK
 //Obtiene INI_FICHAS de la bolsa para cada jugador, colocándolas en sus soportes. Lo hará valiéndose
 //del subprograma *robar* para obtener cada una de las fichas.
+
 void repartir(tBolsa& bolsa, tSoportes soportes) {
 	while (soportes[0].numFichasSoporte != INI_FICHAS) {
-		int fila = generaFilaAleatoria();
-		int columna = generaColumnaAleatoria();
-		if (bolsa.bolsa_fichas[fila][columna] == true) {
-			tFicha ficha{ columna, tColor(fila % NUM_COLORES) };
-			soportes[0].fichas[soportes[0].numFichasSoporte] = ficha;
-			soportes[0].numFichasSoporte++;
-			bolsa.bolsa_fichas[fila][columna] = false;
-		}
+		soportes[0].fichas[soportes[0].numFichasSoporte] == robar(bolsa);
+		soportes[0].numFichasSoporte++;
 	}
-
 	while (soportes[1].numFichasSoporte != INI_FICHAS) {
-		int fila = generaFilaAleatoria();
-		int columna = generaColumnaAleatoria();
-		if (bolsa.bolsa_fichas[fila][columna] == true) {
-			tFicha ficha{ columna, tColor(fila) };
-			soportes[1].fichas[soportes[1].numFichasSoporte] = ficha;
-			soportes[1].numFichasSoporte++;
-			bolsa.bolsa_fichas[fila][columna] = false;
-		}
+		soportes[1].fichas[soportes[1].numFichasSoporte] == robar(bolsa);
+		soportes[1].numFichasSoporte++;
 	}
 }
 
@@ -310,6 +345,7 @@ void ordenarPorColor(tSoporte& soporte) {
 	}
 }
 
+//OK
 //Devuelve true si las fichas son iguales (mismo número y mismo color) y false en caso contrario.
 bool operator==(tFicha izq, tFicha der) {
 	return ((izq.color == der.color) && (izq.numero == der.numero));
@@ -336,7 +372,7 @@ void nuevaJugada(tTablero& tablero, const tJugada& jugada) {
 }
 
 //Elimina del soporte las fichas que hay en la jugada
-void eliminaFichas(tTablero& tablero, const tJugada& jugada) {
+void eliminaFichas(tSoporte& soporte, const tJugada& jugada) {
 
 }
 
@@ -380,12 +416,16 @@ int menor(const tSoportes soportes) {
 	}
 }
 
+//OK
 //Muestra la ficha: número de la ficha ocupando dos posiciones de pantalla y en el color
 //correspondiente, y dejando dos espacios a continuación
 void mostrar(tFicha ficha) {
-
+	colorTexto(ficha.color);
+	cout << setw(2) << ficha.numero << " ";
+	colorTexto(blanco);
 }
 
+//OK
 //Muestra el estado de la bolsa
 void mostrar(const tBolsa& bolsa) {
 	for (int fila = 0; fila < 8; fila++) {
@@ -409,12 +449,11 @@ void mostrar(const tTablero& tablero) {
 
 }
 
-//REVISAR
+//OK
 //Muestra las fichas que hay en el soporte
 void mostrar(const tSoporte& soporte) {
 	for (int i = 0; i < soporte.numFichasSoporte; i++) {
-		cout << soporte.numFichasSoporte;
-
+		mostrar(soporte.fichas[i]);
 	}
 }
 
@@ -424,6 +463,7 @@ void mostrarIndices(int num) {
 
 }
 
+//OK
 string mostrarColor(tColor color) {
 	switch (color) {
 	case 0:
@@ -441,6 +481,7 @@ string mostrarColor(tColor color) {
 	}
 }
 
+//OK
 string mostrarVerdaderoFalso(bool valorFicha) {
 	if (valorFicha == 0) {
 		return "false";
@@ -450,6 +491,7 @@ string mostrarVerdaderoFalso(bool valorFicha) {
 	}
 }
 
+//OK
 void colorTexto(tColor color) {
 	switch (color) {
 	case amarillo:
@@ -468,17 +510,4 @@ void colorTexto(tColor color) {
 		cout << "\033[40;37m";
 		break;
 	}
-}
-
-void mostrar(tFicha ficha) {
-	colorTexto(ficha.color);
-	cout << setw(2) << ficha.numero << " ";
-	colorTexto(blanco);
-}
-
-void elegirJugador() {
-	srand(time(NULL));
-	int a = rand() % 2;
-	a++;
-	cout << "El jugador elegido es el: " << a << endl;
 }
