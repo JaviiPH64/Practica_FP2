@@ -1,5 +1,6 @@
-// Práctica FP2 Rummikub versión 1
-// F. Javier Peña Hernández
+// Pr�ctica FP2 Rummikub versi�n 1
+// Grupo 31
+// F. Javier Pe�a Hern�ndez
 // 54212187Z
 // Entrega: 05/04/2022
 
@@ -13,7 +14,7 @@
 #include <conio.h>
 using namespace std;
 
-//Ficha: caracterizada por su color y su nº
+//Ficha: caracterizada por su color y su n�
 
 enum tColor { rojo, verde, azul, amarillo, blanco };
 
@@ -26,7 +27,7 @@ struct tFicha {
 
 const int NUM_FICHAS = 10;
 const int NUM_COLORES = 4;
-const int TOTAL_FICHAS = NUM_FICHAS * 8;  //2 fichas iguales de cada número y color
+const int TOTAL_FICHAS = NUM_FICHAS * 8;  //2 fichas iguales de cada n�mero y color
 const int INI_FICHAS = 9;
 
 typedef bool tArrayBolsa[8][NUM_FICHAS];
@@ -36,7 +37,7 @@ struct tBolsa {
 	int fichasDisponibles = TOTAL_FICHAS;
 };
 
-//Soporte: lista de tamaño variable de hasta MAX_FICHAS fichas
+//Soporte: lista de tama�o variable de hasta MAX_FICHAS fichas
 
 const int MAX_FICHAS = 50;
 const int NUM_JUGADORES = 2;
@@ -92,17 +93,13 @@ void mostrarIndices(int num);
 void colorTexto(tColor color);
 
 //mis subprogramas
-void ordenarNumBurbuja(tSoporte& soporte);
 void elegirJugador();
 int generaFilaAleatoria();
 int generaColumnaAleatoria();
 tFicha creaFicha();
 string mostrarColor(tColor color);
-string mostrarVerdaderoFalso(bool valorFicha);
 
-void ordenarBurbuja();
-void ordenamiento();
-
+bool operator!=(tFicha izq, tFicha der);
 bool operator<(tFicha izq, tFicha der);
 bool operator>(tFicha izq, tFicha der);
 
@@ -110,7 +107,7 @@ int numeroAleatorio();
 
 //OK
 //Muestra las opciones para las acciones principales del usuario 
-//y devuelve la opción elegida por el usuario
+//y devuelve la opci�n elegida por el usuario
 int menu() {
 	int opcion;
 	cout << "Elige que quieres hacer: " << endl;
@@ -126,55 +123,78 @@ int main() {
 	srand(time(NULL));
 	tBolsa bolsa;
 	inicializarBolsa(bolsa);						//se inicializa la bolsa
+	cout << "Estado inicial de la bolsa: " << endl;
 	mostrar(bolsa);
 	cout << endl;
+
 	tTablero tablero;								//se inicializa el tablero
-	tSoporte soporte1 {};
-	tSoporte soporte2 {};
-	tSoportes soportes = {};	//soportes
-	soportes[0] = soporte1;
-	soportes[1] = soporte2;
+	mostrar(tablero);
+	cout << "Estado inicial del tablero: " << endl;	//est� vac�o
+	cout << "*vacio*" << endl;
+	tSoportes soportes = {};						//se inicializan los soportes
 
-	cout << "numero fichas soporte 1:" << soporte1.numFichasSoporte << endl;
-	cout << "numero fichas soporte 2:" << soporte2.numFichasSoporte << endl;
-	
-	//repartir(bolsa, soportes);
+	repartir(bolsa, soportes);						//repartimos las fichas iniciales
 
-	cout << "numero fichas soporte 1:" << soporte1.numFichasSoporte << endl;
-	cout << "numero fichas soporte 2:" << soporte2.numFichasSoporte << endl;
-	
-	//mostrar(bolsa);
+	cout << "Reparto de fichas: " << endl;
+	mostrar(soportes[0]);
+	cout << " soporte 1" << endl;
+	mostrar(soportes[1]);
+	cout << " soporte 2" << endl;
 
-	//----------------------------------------------------------------------------------------//
-
-	tFicha ficha0 = { 1, rojo };
-	tFicha ficha1 = { 3, azul };
-	tFicha ficha2 = { 8, amarillo };
-	tFicha ficha3 = { 4, azul };
-	tFicha ficha4 = { 5, verde };
-	tFicha ficha5 = { 1, amarillo };
-	tFicha ficha6 = { 2, rojo };
-	tFicha ficha7 = { 3, rojo };
-	tFicha ficha8 = { 2, azul };
-	tFicha ficha9 = { 9, verde };
-	soporte1.fichas[0] = ficha0;
-	soporte1.fichas[1] = ficha1;
-	soporte1.fichas[2] = ficha2;
-	soporte1.fichas[3] = ficha3;
-	soporte1.fichas[4] = ficha4;
-	soporte1.fichas[5] = ficha5;
-	soporte1.fichas[6] = ficha6;
-	soporte1.fichas[7] = ficha7;
-	soporte1.fichas[8] = ficha8;
-	soporte1.fichas[9] = ficha9;
-	soporte1.numFichasSoporte = 10;
-	mostrar(soporte1); cout << " orden original";
-	ordenarPorNum(soporte1);
+	cout << "Soportes ordenados por numero: ";
+	ordenarPorNum(soportes[0]);
+	ordenarPorNum(soportes[1]);
 	cout << endl;
-	mostrar(soporte1); cout << " orden numeros";
+	mostrar(soportes[0]);
 	cout << endl;
-	ordenarPorColor(soporte1);
-	mostrar(soporte1); cout << " orden color";
+	mostrar(soportes[1]);
+
+	cout << endl;
+
+	cout << "Soportes ordenados por color: ";
+	ordenarPorColor(soportes[0]);
+	ordenarPorColor(soportes[1]);
+	cout << endl;
+	mostrar(soportes[0]);
+	cout << endl;
+	mostrar(soportes[1]);
+
+	cout << endl;
+
+	cout << "Estado de la bolsa despues de repartir: " << endl;
+	mostrar(bolsa);
+
+	cout << endl;
+
+	tFicha ficha1 = { 1, rojo };
+	tFicha ficha2 = { 2, azul };
+	tFicha ficha3 = { 6, verde };
+	tFicha ficha4 = { 2, amarillo };
+	tFicha ficha5 = { 7, rojo };
+	tFicha ficha6 = { 1, azul };
+	tFicha ficha7 = { 3, verde };
+	tFicha ficha8 = { 1, amarillo };
+	tFicha ficha9 = { 2, rojo };
+	tFicha ficha10 = { 5, azul };
+	tFicha ficha11 = { 2, verde };
+	tFicha ficha12 = { 10, amarillo };
+	tFicha ficha13 = { 7, rojo };
+	tFicha ficha14 = { 5, azul };
+	tFicha ficha15 = { 1, verde };
+	tFicha ficha16 = { 3, amarillo };
+	tFicha ficha17 = { 9, rojo };
+	tFicha ficha18 = { 10, azul };
+	tFicha ficha19 = { 4, verde };
+	tFicha ficha20 = { 8, amarillo };
+	tFicha ficha21 = { 8, rojo };
+	tFicha ficha22 = { 7, azul };
+	tFicha ficha23 = { 1, verde };
+	tFicha ficha24 = { 7, amarillo };
+	tSoporte soportePrueba = { ficha1, ficha2, ficha3, ficha4, ficha5, ficha6, ficha7, ficha8, ficha9, ficha10, ficha11, ficha12,  
+							   ficha13, ficha14, ficha15, ficha16, ficha17, ficha18, ficha19, ficha20, ficha21, ficha22, ficha23, ficha24 };
+	soportePrueba.numFichasSoporte = 24;
+	mostrar(soportePrueba); cout << "Soporte prueba" << endl;
+	mostrarSeries(soportePrueba);
 	
 
 	return 0;
@@ -187,7 +207,7 @@ int numeroAleatorio() {
 }
 
 //OK
-//Elegimos aleatoriamente quién empieza el juego.
+//Elegimos aleatoriamente qui�n empieza el juego.
 void elegirJugador() {
 	string jugador1, jugador2;
 	cout << "Introduce el nombre del primer jugador " << endl;
@@ -206,7 +226,7 @@ void elegirJugador() {
 
 //OK
 //Le damos a cada casilla de la bolsa el valor true
-//Inicializa la bolsa de fichas de manera que estén todas disponibles
+//Inicializa la bolsa de fichas de manera que est�n todas disponibles
 void inicializarBolsa(tBolsa& bolsa) {
 	for (int i = 0; i < 8; i++) {
 		for (int j = 0; j < NUM_FICHAS; j++) {
@@ -218,14 +238,12 @@ void inicializarBolsa(tBolsa& bolsa) {
 //OK
 //Genera un valor aleatorio para seleccionar una fila
 int generaFilaAleatoria() {
-	srand(time(NULL));
 	return rand() % 8;
 }
 
 //OK
 //Genera un valor aleatorio para seleccionar una columna
 int generaColumnaAleatoria() {
-	srand(time(NULL));
 	return rand() % (NUM_FICHAS);
 }
 
@@ -239,11 +257,11 @@ tFicha creaFicha() {
 
 //OK
 //Devuelve una ficha obtenida de la bolsa. Empieza en una ficha situada en una fila
-//y una columna seleccionadas aleatoriamente. Si la ficha está disponible, devuelve la misma.
-//Si ya ha sido usada, se avanza por el array bidimensional desde esa posición y por filas
+//y una columna seleccionadas aleatoriamente. Si la ficha est� disponible, devuelve la misma.
+//Si ya ha sido usada, se avanza por el array bidimensional desde esa posici�n y por filas
 //hasta encontrar una ficha disponible que devolver. Si llega al final del array sin encontrar
-//una ficha disponible seguirá buscando desde el principio. Si no quedan fichas en la bolsa, 
-//devuelve una ficha con el número -1.
+//una ficha disponible seguir� buscando desde el principio. Si no quedan fichas en la bolsa, 
+//devuelve una ficha con el n�mero -1.
 
 tFicha robar(tBolsa& bolsa) {
 	tFicha fichaRobada{};
@@ -329,31 +347,31 @@ tFicha robar(tBolsa& bolsa) {
 	}
 }
 
-//REVISAR
-//Obtiene INI_FICHAS de la bolsa para cada jugador, colocándolas en sus soportes. Lo hará valiéndose
+//OK
+//Obtiene INI_FICHAS de la bolsa para cada jugador, coloc�ndolas en sus soportes. Lo har� vali�ndose
 //del subprograma *robar* para obtener cada una de las fichas.
 
 void repartir(tBolsa& bolsa, tSoportes soportes) {
 	for (int i = 0; i < INI_FICHAS; i++) {
 		tFicha fichaRobada = (robar(bolsa));
 		soportes[0].fichas[i] = fichaRobada;
-		mostrar(soportes[0].fichas[i]);
 		soportes[0].numFichasSoporte++;
 	}
-	cout << "fichas soporte 1 bucle: " << soportes[0].numFichasSoporte << endl;
 	for (int j = 0; j < INI_FICHAS; j++) {
 		tFicha fichaRobada = (robar(bolsa));
 		soportes[1].fichas[j] = fichaRobada;
-		mostrar(soportes[1].fichas[j]);
 		soportes[1].numFichasSoporte++;
 	}
-	cout << "fichas soporte 2 bucle: " << soportes[1].numFichasSoporte << endl;
 }
 
 //OK
-//Devuelve true si las fichas son iguales (mismo número y mismo color) y false en caso contrario.
+//Devuelve true si las fichas son iguales (mismo n�mero y mismo color) y false en caso contrario.
 bool operator==(tFicha izq, tFicha der) {
 	return ((izq.color == der.color) && (izq.numero == der.numero));
+}
+
+bool operator!=(tFicha izq, tFicha der) {
+	return ((izq.color != der.color) || (izq.numero != der.numero));
 }
 
 bool operator<(tFicha izq, tFicha der) {
@@ -365,6 +383,7 @@ bool operator>(tFicha izq, tFicha der) {
 }
 
 //OK
+//Ordena las fichas del soporte por número
 void ordenarPorNum(tSoporte& soporte) {
 	int aux;
 	tColor caux{};
@@ -383,7 +402,7 @@ void ordenarPorNum(tSoporte& soporte) {
 }
 
 //OK
-//Ordena las fichas del soporte por colores, y dentro de los colores, de menor a mayor número.
+//Ordena las fichas del soporte por colores, y dentro de los colores, de menor a mayor n�mero.
 void ordenarPorColor(tSoporte& soporte) {
 	ordenarPorNum(soporte);
 	int aux;
@@ -403,7 +422,7 @@ void ordenarPorColor(tSoporte& soporte) {
 }
 
 //OK
-//Devuelve la posición (índice) de la ficha en la jugada, o -1 si no está.
+//Devuelve la posici�n (�ndice) de la ficha en la jugada, o -1 si no est�.
 int buscar(const tJugada& jugada, tFicha ficha) {
 	if (jugada.numFichasJugada == 0) {
 		return -1;
@@ -417,7 +436,7 @@ int buscar(const tJugada& jugada, tFicha ficha) {
 	}
 }
 
-tJugada esSerie(tSoporte soporte) {
+/*tJugada esSerie(tSoporte soporte) {
 	ordenarPorNum(soporte);
 	mostrar(soporte);
 	int num;
@@ -431,65 +450,88 @@ tJugada esSerie(tSoporte soporte) {
 				serie.filaFichas[serie.numFichasJugada] = soporte.fichas[i];
 				serie.numFichasJugada++;
 			}
-		}		
+		}
 	}
 	tColor colorSerie;
 	for (int j = 0; j < serie.numFichasJugada; j++) {
 
 	}
-}
+}*/
 
+//OK
 //Muestra las posibles series que se pueden crear con las fichas del soporte
 void mostrarSeries(tSoporte soporte) {
 	ordenarPorNum(soporte);
+	mostrar(soporte);
+	cout << endl;
 	tJugada serie{};
-	int num = 0;
-	int aux;
 	for (int i = 0; i < soporte.numFichasSoporte; i++) {
-		num++;
-		aux = 0;
-		for (int j = 0; j < soporte.numFichasSoporte; j++) {
-			if (soporte.fichas[j].numero = num) {
-				serie.filaFichas[aux] = soporte.fichas[j];
-				serie.numFichasJugada++;
+		if ((soporte.fichas[i].numero == soporte.fichas[i + 1].numero) && (soporte.fichas[i] != soporte.fichas[i + 1])) {
+			serie.numFichasJugada = 2;
+			serie.filaFichas[0] = soporte.fichas[i];
+			serie.filaFichas[1] = soporte.fichas[i + 1];
+			i++;
+			if ((soporte.fichas[i].numero == soporte.fichas[i + 1].numero) && (soporte.fichas[i] != soporte.fichas[i + 1]) && (soporte.fichas[i - 1] != soporte.fichas[i + 1])) {
+				serie.numFichasJugada = 3;
+				serie.filaFichas[2] = soporte.fichas[i + 1];
+				i++;
+				if ((soporte.fichas[i].numero == soporte.fichas[i + 1].numero) && (soporte.fichas[i] != soporte.fichas[i + 1]) && (soporte.fichas[i - 1] != soporte.fichas[i + 1]) && (soporte.fichas[i - 2] != soporte.fichas[i + 1])) {
+					serie.numFichasJugada = 4;
+					serie.filaFichas[3] = soporte.fichas[i + 1];
+				}
+				else {
+					serie.filaFichas[3] = {};
+				}
+			}
+			else {
+				serie.filaFichas[2] = {};
 			}
 		}
-		if (serie.numFichasJugada > 2) {
-			for (int k = 0; k < serie.numFichasJugada; k++) {
-
-			}
+		else {
+			serie.filaFichas[1] = {};
+			serie.numFichasJugada = 0;
+		}
+		if (serie.numFichasJugada == 3 || serie.numFichasJugada == 4) {
+			cout << "serie: ";
+			mostrar(serie);
+			cout << endl;
 		}
 	}
 }
 
+//HACER
 //Muestra las posibles escaleras que se pueden crear con las fichas del soporte
 void mostrarEscaleras(tSoporte soporte) {
 
 }
 
 //OK
-//Añade en el tablero la nueva jugada
+//A�ade en el tablero la nueva jugada
 void nuevaJugada(tTablero& tablero, const tJugada& jugada) {
 	tablero.jugadas[tablero.numJugadas] = jugada;
 	tablero.numJugadas++;
 }
 
+//HACER
 //Elimina del soporte las fichas que hay en la jugada
 void eliminaFichas(tSoporte& soporte, const tJugada& jugada) {
 
 }
 
+//HACER
 //Permite al usuario crear una jugada con fichas que haya en su soporte
 void nuevaJugada(tSoporte soporte, tJugada& jugada) {
 
 }
 
+//HACER
 //Intenta colocar la ficha en la jugada, sea esta una serie o una escalera, en cuyo caso lo
 //intenta en ambos extremos. Devuelve true si consigue colocar la ficha y false en caso contrario.
 bool ponerFicha(tJugada& jugada, tFicha ficha) {
 	return true;
 }
 
+//HACER
 //Permite al usuario colocar fichas de su soporte en el tablero, como nuevas series o escaleras, o
 //fichas independientes en jugadas que haya sobre el tablero.
 bool jugar(tTablero& tablero, tSoporte& soporte) {
@@ -497,8 +539,8 @@ bool jugar(tTablero& tablero, tSoporte& soporte) {
 }
 
 //OK
-//Devuelve la posición (índice) del soporte que acumula el menor número de puntos
-//(suma de los números de sus fichas). Se usará para determinar el ganador en caso de bloqueo.
+//Devuelve la posici�n (�ndice) del soporte que acumula el menor n�mero de puntos
+//(suma de los n�meros de sus fichas). Se usar� para determinar el ganador en caso de bloqueo.
 int menor(const tSoportes soportes) {
 	int puntos1 = 0;
 	int puntos2 = 0;
@@ -520,8 +562,8 @@ int menor(const tSoportes soportes) {
 }
 
 //OK
-//Muestra la ficha: número de la ficha ocupando dos posiciones de pantalla y en el color
-//correspondiente, y dejando dos espacios a continuación
+//Muestra la ficha: n�mero de la ficha ocupando dos posiciones de pantalla y en el color
+//correspondiente, y dejando dos espacios a continuaci�n
 void mostrar(tFicha ficha) {
 	colorTexto(ficha.color);
 	cout << setw(2) << ficha.numero << " ";
@@ -548,7 +590,7 @@ void mostrar(const tBolsa& bolsa) {
 }
 
 //OK
-//Muestra en una línea las fichas de la jugada
+//Muestra en una l�nea las fichas de la jugada
 void mostrar(const tJugada& jugada) {
 	for (int i = 0; i < jugada.numFichasJugada; i++) {
 		mostrar(jugada.filaFichas[i]);
@@ -574,8 +616,8 @@ void mostrar(const tSoporte& soporte) {
 }
 
 //OK
-//Muestra los números de 1 a num (lo usaremos para mostrarlos debajo de un soporte
-//y facilitar así al usuario la selección de fichas).
+//Muestra los n�meros de 1 a num (lo usaremos para mostrarlos debajo de un soporte
+//y facilitar as� al usuario la selecci�n de fichas).
 void mostrarIndices(int num) {
 	for (int i = 0; i < num; i++) {
 		cout << i + 1;
@@ -597,16 +639,6 @@ string mostrarColor(tColor color) {
 	case 3:
 		return "Amarillo";
 		break;
-	}
-}
-
-//OK
-string mostrarVerdaderoFalso(bool valorFicha) {
-	if (valorFicha == 0) {
-		return "false";
-	}
-	else {
-		return "true";
 	}
 }
 
