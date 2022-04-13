@@ -195,6 +195,8 @@ int main() {
 	soportePrueba.numFichasSoporte = 24;
 	mostrar(soportePrueba); cout << "Soporte prueba" << endl;
 	mostrarSeries(soportePrueba);
+	cout << endl;
+	mostrarEscaleras(soportePrueba);
 	
 
 	return 0;
@@ -436,29 +438,7 @@ int buscar(const tJugada& jugada, tFicha ficha) {
 	}
 }
 
-/*tJugada esSerie(tSoporte soporte) {
-	ordenarPorNum(soporte);
-	mostrar(soporte);
-	int num;
-	int aux = 0;
-	cout << "Elige el numero para la serie: ";
-	cin >> num;
-	tJugada serie{};
-	for (int i = 0; i < soporte.numFichasSoporte; i++) {
-		while (serie.numFichasJugada < 5) {
-			if (soporte.fichas[i].numero = num) {
-				serie.filaFichas[serie.numFichasJugada] = soporte.fichas[i];
-				serie.numFichasJugada++;
-			}
-		}
-	}
-	tColor colorSerie;
-	for (int j = 0; j < serie.numFichasJugada; j++) {
-
-	}
-}*/
-
-//OK
+//REVISAR
 //Muestra las posibles series que se pueden crear con las fichas del soporte
 void mostrarSeries(tSoporte soporte) {
 	ordenarPorNum(soporte);
@@ -502,13 +482,119 @@ void mostrarSeries(tSoporte soporte) {
 //HACER
 //Muestra las posibles escaleras que se pueden crear con las fichas del soporte
 void mostrarEscaleras(tSoporte soporte) {
+	ordenarPorColor(soporte);
+	mostrar(soporte);
+	cout << " soporte ordenado" << endl;
+	tJugada posibleRoja = {};
+	tJugada posibleVerde = {};
+	tJugada posibleAzul = {};
+	tJugada posibleAmarilla = {};	
+	tJugada Escalera = {};
+	bool aux = true;
 
+	for (int i = 0; i < soporte.numFichasSoporte; i++) {
+		if (soporte.fichas[i].color == 0) {
+			if (posibleRoja.numFichasJugada == 0) {
+				cout << "Hola mundo" << endl;
+				posibleRoja.filaFichas[0] = soporte.fichas[i];
+				posibleRoja.numFichasJugada++;
+			}
+			else {
+				for (int j = 0; j < posibleRoja.numFichasJugada; j++) {
+					if (soporte.fichas[i].numero = posibleRoja.filaFichas[j].numero) {
+						aux = false;
+						cout << "no se suma ficha roja" << endl;
+					}
+					if (aux) {
+						posibleRoja.filaFichas[posibleRoja.numFichasJugada] = soporte.fichas[i];
+						posibleRoja.numFichasJugada++;
+						cout << "se suma ficha roja" << endl;
+					}
+					else {
+						aux = true;
+					}
+				}
+			}			
+		}
+
+
+
+
+		if (soporte.fichas[i].color == 1) {
+			if (posibleVerde.numFichasJugada == 0) {
+				posibleVerde.filaFichas[0] = soporte.fichas[i];
+				posibleVerde.numFichasJugada++;
+			}
+			else {
+				for (int j = 0; j < posibleVerde.numFichasJugada; j++) {
+					if (soporte.fichas[i].numero = posibleVerde.filaFichas[j].numero) {
+						aux = false;
+					}
+					if (aux) {
+						posibleVerde.filaFichas[posibleVerde.numFichasJugada] = soporte.fichas[i];
+						posibleVerde.numFichasJugada++;
+					}
+					else {
+						aux = true;
+					}
+				}
+			}			
+		}
+		if (soporte.fichas[i].color == 2) {
+			for (int j = 0; j < posibleAzul.numFichasJugada; j++) {
+				if (posibleAzul.numFichasJugada == 0) {
+					posibleAzul.filaFichas[0] = soporte.fichas[i];
+					posibleAzul.numFichasJugada++;
+				}
+				else {
+					if (soporte.fichas[i].numero = posibleAzul.filaFichas[j].numero) {
+						aux = false;
+					}
+					if (aux) {
+						posibleAzul.filaFichas[posibleAzul.numFichasJugada] = soporte.fichas[i];
+						posibleAzul.numFichasJugada++;
+					}
+					else {
+						aux = true;
+					}
+				}				
+			}
+		}
+		if (soporte.fichas[i].color == 3) {
+			for (int j = 0; j < posibleAmarilla.numFichasJugada; j++) {
+				if (posibleAmarilla.numFichasJugada == 0) {
+					posibleAmarilla.filaFichas[0] = soporte.fichas[i];
+					posibleAmarilla.numFichasJugada++;
+				}
+				else {
+					if (soporte.fichas[i].numero = posibleAmarilla.filaFichas[j].numero) {
+						aux = false;
+					}
+					if (aux) {
+						posibleAmarilla.filaFichas[posibleAmarilla.numFichasJugada] = soporte.fichas[i];
+						posibleAmarilla.numFichasJugada++;
+					}
+					else {
+						aux = true;
+					}
+				}				
+			}
+		}
+	}
+	cout << "Numero de fichas: " << posibleRoja.numFichasJugada << posibleVerde.numFichasJugada << posibleAzul.numFichasJugada << posibleAmarilla.numFichasJugada << endl;
+	mostrar(posibleRoja); cout << endl;
+	mostrar(posibleVerde); cout << endl;
+	mostrar(posibleAzul); cout << endl;
+	mostrar(posibleAmarilla); cout << endl;
 }
 
 //OK
 //A�ade en el tablero la nueva jugada
 void nuevaJugada(tTablero& tablero, const tJugada& jugada) {
 	tablero.jugadas[tablero.numJugadas] = jugada;
+	cout << "Nueva jugada: ";
+	mostrar(tablero.jugadas[tablero.numJugadas]);
+	cout << endl;
 	tablero.numJugadas++;
 }
 
@@ -661,4 +747,3 @@ void colorTexto(tColor color) {
 		cout << "\033[40;37m";
 		break;
 	}
-}
